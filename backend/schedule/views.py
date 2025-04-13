@@ -17,3 +17,13 @@ def get_schedule(request, subcity_id):
 
     # Return the serialized data as a JSON response
     return JsonResponse(serializer.data, safe=False)
+
+def get_all_subcities(request):
+    # Retrieve all subcities
+    subcities = Subcity.objects.all()
+    
+    # Prepare data in list format
+    data = [{"id": subcity.id, "name": subcity.name} for subcity in subcities]
+    
+    # Return JSON response
+    return JsonResponse(data, safe=False)

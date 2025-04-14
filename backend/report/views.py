@@ -214,3 +214,60 @@ def retrieve_reports(request):
     # Serialize the filtered reports
     serializer = ResidentWasteReportSerializer(reports, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_reports(request):
+    user = request.user
+
+    # Ensure the user has the appropriate role
+    if user.role not in [
+        UserAccount.Role.DATA_ENCODER,
+        UserAccount.Role.UNION,
+        UserAccount.Role.TABYA,
+        UserAccount.Role.CITY,
+        UserAccount.Role.SUB_CITY,
+    ]:
+        return Response({'error': 'You do not have permission to view reports'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Get the Subcity ID, start date, and end date from the request query parameters
+    subcity_name = request.query_params.get('subcity')
+    start_date_str = request.query_params.get('start_date')
+    end_date_str = request.query_params.get('end_date')
+
+    if not subcity_name or not start_date_str or not end_date_str:
+        return Response({'error': 'Please provide subcity, start_date, and end_date parameters.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Convert the dates from strings to datetime objects
+    try:
+        start_date = timezone.datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = timezone.datetime.strptime(end_date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Ensure end_date is not earlier than start_date
+    if end_date < start_date:
+        return Response({'error': 'end_date cannot be earlier than start_date.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Get the subcity object
+    try:
+        subcity = Subcity.objects.get(name=subcity_name)
+    except Subcity.DoesNotExist:
+        return Response({'error': 'Sub-city not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Filter for approved reports only, for the specified subcity and date range
+    reports = ResidentWasteReport.objects.filter(
+        sub_city=subcity,
+        report_status='approved',  # Ensure only approved reports are included
+        date__range=(
+            timezone.make_aware(timezone.datetime.combine(start_date, timezone.datetime.min.time())),
+            timezone.make_aware(timezone.datetime.combine(end_date, timezone.datetime.max.time()))
+        )
+    )
+
+    # Aggregate metric tons for each Tabya
+    tabya_metrics = reports.values('tabya__name').annotate(total_metric_tons=Sum('metric_ton'))
+
+    return Response(tabya_metrics, status=status.HTTP_200_OK)

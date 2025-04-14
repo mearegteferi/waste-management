@@ -138,3 +138,79 @@ def approve_report(request, report_id):
     return Response({"message": f"Report {approval_status} by {user.role.capitalize()}"}, status=status.HTTP_200_OK)
 
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def retrieve_reports(request):
+    user = request.user
+    role = user.role
+    reports = ResidentWasteReport.objects.all()
+    report_status = request.query_params.get('status')
+
+    if role == UserAccount.Role.DATA_ENCODER:
+        # Data Encoder sees reports that are either rejected or approved (overall)
+
+        if report_status == 'rejected':
+            reports = reports.filter(report_status='rejected')
+
+        elif report_status == 'approved':
+            reports = reports.filter(report_status='approved')
+        else:
+            return Response({'error': 'Invalid status for data encoder'}, status=status.HTTP_400_BAD_REQUEST)
+
+    elif role == UserAccount.Role.TABYA:
+        # Tabya sees reports related to their tabya and can filter by pending or approved (by tabya)
+        try:
+            user_profile = TabyaProfile.objects.get(user=user)
+        except TabyaProfile.DoesNotExist:
+            return Response({'error': 'Tabya profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        tabya = user_profile.tabya
+        if report_status == 'pending':
+            reports = reports.filter(tabya=tabya, tabya_approval_status='pending')
+        elif report_status == 'approved':
+            reports = reports.filter(tabya=tabya, report_status='approved')
+        else:
+            return Response({'error': 'Invalid status for tabya'}, status=status.HTTP_400_BAD_REQUEST)
+
+    elif role == UserAccount.Role.UNION:
+        # Union sees reports related to their union and can filter by pending or approved (by union)
+        if report_status == 'pending':
+            reports = reports.filter(delivering_union=user, tabya_approval_status='approved', union_approval_status='pending')
+        elif report_status == 'approved':
+            reports = reports.filter(delivering_union=user, report_status='approved')
+        else:
+            return Response({'error': 'Invalid status for union'}, status=status.HTTP_400_BAD_REQUEST)
+
+    elif role == UserAccount.Role.SUB_CITY:
+        # Sub-city officials see only approved reports (overall) related to their sub-city
+        try:
+            user_profile = SubCityProfile.objects.get(user=user)
+        except SubCityProfile.DoesNotExist:
+            return Response({'error': 'Sub-city profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        sub_city = user_profile.sub_city
+        if report_status == 'approved':
+            reports = reports.filter(sub_city=sub_city, report_status='approved')
+        elif report_status == 'rejected':
+            reports = reports.filter(sub_city=sub_city, report_status='rejected')
+        else:
+            return Response({'error': 'Invalid status for sub city'}, status=status.HTTP_400_BAD_REQUEST)
+
+    elif role == UserAccount.Role.CITY:
+        # City officials see reports pending approval by union or approved (overall)
+        if report_status == 'pending':
+            reports = reports.filter(union_approval_status='approved', city_approval_status='pending')
+        elif report_status == 'approved':
+            reports = reports.filter(report_status='approved')
+        elif report_status == 'rejected':
+            reports = reports.filter(report_status='rejected')
+        else:
+            return Response({'error': 'Invalid status for city'}, status=status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return Response({'error': 'Invalid role'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Serialize the filtered reports
+    serializer = ResidentWasteReportSerializer(reports, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

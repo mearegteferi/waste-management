@@ -63,3 +63,78 @@ def write_report(request):
     
     # If data is invalid, return a 400 Bad Request response with errors
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def approve_report(request, report_id):
+    user = request.user
+
+    # Get the report
+    try:
+        report = ResidentWasteReport.objects.get(id=report_id)
+    except ResidentWasteReport.DoesNotExist:
+        raise NotFound("Report not found.")
+
+    # Get approval status from request data
+    approval_status = request.data.get('approval_status')
+    rejection_reason = request.data.get('rejection_reason')
+
+    if approval_status not in ['approved', 'rejected']:
+        return Response({"error": "Invalid approval status."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Approval logic based on the user role
+    if user.role == UserAccount.Role.TABYA:
+        if report.tabya_approval_status in ["approved", "rejected"]:
+            return Response({'error': 'report approved already'})
+        # Tabya approval
+        try:
+            user_profile = TabyaProfile.objects.get(user=user)
+        except TabyaProfile.DoesNotExist:
+            return Response({'error': 'Tabya profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if user's tabya matches the report's tabya
+        if user_profile.tabya != report.tabya:
+            return Response({'error': 'You can only approve reports from your tabya'}, status=status.HTTP_403_FORBIDDEN)
+
+        report.tabya_approval_status = approval_status
+        report.tabya_approved_by = user
+        report.tabya_approval_date = timezone.now()
+        if approval_status == 'rejected':
+            report.rejection_reason = rejection_reason
+            report.report_status = approval_status
+
+    elif user.role == UserAccount.Role.UNION:
+        if report.tabya_approval_status in ["pending", "rejected"]:
+            return Response({'error': 'report should be approved by tabya first'})
+        # Union approval
+        if report.delivering_union != user:
+            raise PermissionDenied("You can only approve reports delivered by your union.")
+
+        report.union_approval_status = approval_status
+        report.union_approval_date = timezone.now()
+        if approval_status == 'rejected':
+            report.union_rejection_reason = rejection_reason
+            report.report_status = approval_status
+
+    elif user.role == UserAccount.Role.CITY:
+        if report.union_approval_status in ["pending", "rejected"]:
+            return Response({'error': 'report should be approved by union first'})
+        # City approval
+        report.city_approval_status = approval_status
+        report.city_approval_date = timezone.now()
+        report.report_status = "approved"
+        if approval_status == 'rejected':
+            report.city_rejection_reason = rejection_reason
+            report.report_status = approval_status
+
+    else:
+        return Response({'error': 'You do not have permission to approve this report'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Save the report after updating
+    report.save()
+
+    return Response({"message": f"Report {approval_status} by {user.role.capitalize()}"}, status=status.HTTP_200_OK)
+
+

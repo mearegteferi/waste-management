@@ -111,3 +111,23 @@ def related_articles(request):
         return Response(serializer.data)
     else:
         return Response([])
+    
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def random_articles(request):
+    random_article = Article.objects.filter(status=Article.State.APPROVED).order_by('?')[:3]
+    serializer = ArticleSerializer(random_article, many=True)
+    return Response({
+        'results': [
+            {
+                'id': article['id'],
+                'title': article['title'],
+                'image': article['image'],
+                'created_date': article['created_date'],
+                'content_preview': article['content_preview'],
+                'author_name': article['author_name']
+            }
+            for article in serializer.data
+        ]
+    }, status=status.HTTP_200_OK)

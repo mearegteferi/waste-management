@@ -76,3 +76,25 @@ def list_article(request):
         ]
     }, status=status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def article_detail(request, id):
+    try:
+        article = Article.objects.get(pk=id)
+    except Article.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ArticleSerializer(article)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+@permission_classes([AllowAny])
+@api_view(['GET'])
+def list_categories(request):
+    categories = Category.objects.all()
+    serializer = CategorySerializer(categories, many=True)
+    return Response(serializer.data)
+

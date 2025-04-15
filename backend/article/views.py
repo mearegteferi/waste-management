@@ -98,3 +98,16 @@ def list_categories(request):
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
 
+
+
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def related_articles(request):
+    category_id = request.query_params.get('category', None)
+    if category_id:
+        related_articles = Article.objects.filter(category_id=category_id, status=Article.State.APPROVED)
+        serializer = ArticleSerializer(related_articles, many=True)
+        return Response(serializer.data)
+    else:
+        return Response([])

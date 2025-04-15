@@ -45,3 +45,34 @@ def create_article(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
    
+   @api_view(['GET'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def list_article(request):
+    page = request.query_params.get('page', 1)
+    page_size = 6  # Set the number of articles per page
+    start = (int(page) - 1) * page_size
+    end = start + page_size
+    articles = Article.objects.filter(status=Article.State.APPROVED).order_by('-created_date')[start:end]
+    serializer = ArticleSerializer(articles, many=True, context={'request': request})
+    total_count = Article.objects.count()
+    next_page = int(page) + 1 if end < total_count else None
+    previous_page = int(page) - 1 if int(page) > 1 else None
+
+    return Response({
+        'count': total_count,
+        'next': next_page,
+        'previous': previous_page,
+        'results': [
+            {
+                'id': article['id'],
+                'title': article['title'],
+                'image': article['image'],
+                'created_date': article['created_date'],
+                'content_preview': article['content_preview'],
+                'author_name': article['author_name']
+            }
+            for article in serializer.data
+        ]
+    }, status=status.HTTP_200_OK)
+

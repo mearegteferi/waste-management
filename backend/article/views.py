@@ -131,3 +131,35 @@ def random_articles(request):
             for article in serializer.data
         ]
     }, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # You can adjust permissions as needed
+def list_unapproved_articles(request):
+    unapproved_articles = Article.objects.filter(status=Article.State.PENDING)
+    serializer = ArticleSerializer(unapproved_articles, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def approve_article(request, id):
+    article = Article.objects.filter(pk=id).first()
+    if not article:
+        return Response({'error': 'Article not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get the approval status from the request data
+    status_value = request.data.get("status")
+    if status_value not in [Article.State.REJECTED, Article.State.APPROVED, ]:
+        return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update the article's status
+    article.status = status_value
+    article.save()
+    
+    message = "approved" if article.status == Article.State.APPROVED else "rejected"
+    return Response({"message": f"Article {message} successfully!"}, status=status.HTTP_200_OK)

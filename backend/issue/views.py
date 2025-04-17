@@ -38,3 +38,31 @@ def add_issue(request):
     serializer = IssueSerializer(issue)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def view_issue(request):
+    user = request.user
+    issues = Issue.objects.all()
+
+    if user.role == UserAccount.Role.SUB_CITY:
+        # Filter by the user's Subcity
+        if hasattr(user, 'subcityprofile'):
+            issues = issues.filter(sub_city=user.subcityprofile.sub_city)
+
+    elif user.role == UserAccount.Role.TABYA:
+        # Filter by both the user's Subcity and Tabya
+        if hasattr(user, 'tabyaprofile'):
+            issues = issues.filter(
+                sub_city=user.tabyaprofile.sub_city,
+                tabya=user.tabyaprofile.tabya
+            )
+
+    elif user.role == UserAccount.Role.CITY:
+        # City officials retrieve all issues; no filtering needed
+        pass
+
+    # Serialize and return the filtered issues with subcity and tabya names
+    serializer = IssueSerializer(issues, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

@@ -7,6 +7,11 @@ function Login(){
         <form>
             <label>email</label>
             <label>password</label>
+            <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className=""
+                  />
         </form>
         </>
     )

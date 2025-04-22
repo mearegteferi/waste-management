@@ -6,6 +6,11 @@ function Login(){
         </div>
         <form>
             <label>email</label>
+            <Field
+                  name="email"
+                  type="email"
+                  className=""
+                />
             <label>password</label>
             <Field
                     name="password"

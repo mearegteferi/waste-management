@@ -17,6 +17,13 @@ function Login(){
                     type={showPassword ? "text" : "password"}
                     className=""
                   />
+
+            <button
+                type="submit"
+                className=""
+              >
+                Login
+              </button>
         </form>
         </>
     )

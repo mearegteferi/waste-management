@@ -16,6 +16,17 @@ function Login(){
             />
           </div>
 
+          <div>
+            <label className="">Password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className=""
+            />
+            </div>
+
             <button
                 type="submit"
                 className=""

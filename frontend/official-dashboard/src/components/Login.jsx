@@ -10,6 +10,10 @@ function Login(){
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = () => {
+    console.log("submission")
+  }
   
     return(
         <>
@@ -29,9 +33,9 @@ function Login(){
           </div>
 
           <div>
-            <label className="">Password</label>
+            <label className="text-red-600">Password</label>
             <input
-              type={showPassword ? "text" : "password"}
+              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}

@@ -5,5 +5,9 @@ export const login = createAsyncThunk('auth/login', async(Credentials, thunkAPI)
 })
 
 export const fetchUser = createAsyncThunk('auth/fetch', async(_, thunkAPI) => {
+
+})
+
+export const logout = createAsyncThunk('auth/logout', async(_, thunkAPI) => {
     
 })

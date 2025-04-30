@@ -17,6 +17,8 @@ class User(AbstractUser):
       INSPECTOR = "inspector", "Inspector"
       FINANCE = "finance", "Finance Officer"
       IT_SUPPORT = "it_support", "IT Support"
+
+    role = models.CharField(max_length=30, choices=Role.choices)
     phone = models.CharField(max_length=20, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
 

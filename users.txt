@@ -1,0 +1,119 @@
+Great — now that we know your system is a **city-wide waste management system**, let's enhance the user list by incorporating real-world roles and responsibilities often found in **municipal solid waste management** systems. This will help your design be **scalable, realistic, and aligned with how city operations typically work**.
+
+---
+
+## 🧾 Finalized User Roles & Responsibilities  
+(For a **Single-City Waste Management System**)
+
+### 🧑‍💼 1. **Top General Admin**
+**Responsibilities:**
+- Manage all users (create/update/delete)
+- Define policies, zones, and waste categories
+- Approve/report to city government or environmental bodies
+- View full reports, analytics, and system logs
+- Oversee city-wide operations
+
+---
+
+### 🧑‍💼 2. **Subcity Admin**
+**Responsibilities:**
+- Manage **subcity boundaries** and assigned users (e.g., tabya users)
+- Create and monitor **tabya-level staff**
+- Review **waste collection reports** from tabya
+- Handle complaints and performance metrics within their subcity
+
+---
+
+### 🏢 3. **Union Representative**
+**Responsibilities:**
+- Represent a **community or cooperative group**
+- Coordinate with subcity officials for **waste pickup scheduling**
+- Engage in public awareness campaigns
+- Submit reports or requests on behalf of residents
+
+---
+
+### 🧑‍💻 4. **Data Encoder**
+**Responsibilities:**
+- Input paper-based or external data (e.g., from field officers)
+- Enter metrics like waste volume, routes, collection status
+- Support back-office digitalization efforts
+
+---
+
+### 🧪 5. **Evaluator**
+**Responsibilities:**
+- Monitor KPIs such as:
+  - Collection frequency
+  - Missed pickups
+  - Service quality
+- Validate reported data from subcities/tabyas
+- Generate performance and compliance reports
+
+---
+
+### 🧑‍🔧 6. **Subcity Staff** (e.g., Supervisor, Vice, Environmentalist)
+**Responsibilities:**
+- Coordinate waste collectors at the **subcity level**
+- Supervise tabya-level field agents
+- Monitor:
+  - Illegal dumping
+  - Hazardous waste events
+- Work with evaluators for accurate data submission
+
+---
+
+### 🧑‍🏭 7. **Tabya Staff** (e.g., Supervisor, Field Worker, Cleaner)
+**Responsibilities:**
+- Day-to-day execution:
+  - Street cleaning
+  - Door-to-door waste collection
+  - Reporting issues (blocked roads, container overflows)
+- Use the app for:
+  - Daily check-ins/check-outs
+  - Submitting incident reports
+  - Uploading photos of completed work
+
+---
+
+### 🧍‍♂️ 8. **Resident**
+**Responsibilities:**
+- Request waste pickup (e.g., for bulk or hazardous items)
+- Report complaints (missed collection, overflowing bins)
+- View waste collection schedules
+- Rate services or report illegal dumping
+
+---
+
+### 🏛️ 9. **Organization**
+**Responsibilities:**
+- Businesses or institutions generating waste
+- May have:
+  - Custom pickup schedule
+  - Payment and invoice management
+- Can submit bulk waste or hazardous material reports
+- Interface with admin for compliance or inspections
+
+---
+
+## 📋 Optional (Advanced/Future Roles)
+> Consider these for long-term extensibility:
+
+| Role              | Responsibility                                                                 |
+|------------------|----------------------------------------------------------------------------------|
+| **Driver**        | Assigned to waste trucks, logs route completions                               |
+| **Inspector**     | Field-based evaluator ensuring regulation compliance                            |
+| **Dispatcher**    | Assigns routes to trucks and teams, especially during holidays or overflow      |
+| **Finance Officer** | Manages payments, penalties, or subscription fees for residents/orgs          |
+| **IT Support**    | Maintains the system, manages bugs, user lockouts, and data integrity           |
+
+---
+
+## 🧠 Suggestion: Role-Based Access Control (RBAC)
+
+Use a flexible `Role` field + permissions to determine:
+- Who sees what
+- Who can act on what
+- What data can be submitted or viewed
+
+Would you like a complete ER diagram or Django model layout based on this structure?

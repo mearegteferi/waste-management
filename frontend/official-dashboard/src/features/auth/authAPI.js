@@ -11,7 +11,7 @@ export const loginAPI = async (credentials) => {
       throw new Error(data.detail || 'Login failed');
     }
   
-    return data; // e.g., { token, user }
+    return data; 
   };
 
 

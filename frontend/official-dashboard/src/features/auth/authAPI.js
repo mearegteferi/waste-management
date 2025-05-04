@@ -23,3 +23,7 @@ export const fetchAPI = () => {
 export const logoutAPI = () => {
 
 }
+
+export const fetchAPI = async () => {
+
+}

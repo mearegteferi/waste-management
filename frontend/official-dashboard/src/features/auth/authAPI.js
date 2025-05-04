@@ -32,5 +32,17 @@ export const fetchAPI = () => {
 }
 
 export const logoutAPI = () => {
+    const response = await fetch('https://backend.com/api/logout/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
 
+    });
+  
+    const data = await response.json();
+  
+    if (!response.ok) {
+      throw new Error(data.detail || 'Logout failed');
+    }
+  
+    return data; 
 }

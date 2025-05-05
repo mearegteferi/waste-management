@@ -2,6 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class DistrictType(models.TextChoices):
+    CITY = 'city', 'City'
+    SUBCITY = 'subcity', 'Subcity'
+    KEBELE = 'kebele', 'Kebele'
+
+
 class Role(models.Model):
     name = models.CharField(max_length=50, unique=True)
 

@@ -17,7 +17,6 @@ class Role(models.Model):
 
 class User(AbstractUser):
 
-    role = models.CharField(max_length=30, choices=Role.choices)
     phone = models.CharField(max_length=20, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
 

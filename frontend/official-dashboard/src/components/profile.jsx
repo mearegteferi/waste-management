@@ -1,7 +1,7 @@
-function Profile(){
-    return(
-        <>
-            <h1>user profile</h1>
-        </>
-    )
+function Profile() {
+  return (
+    <div>
+      <h1>user profile</h1>
+    </div>
+  );
 }

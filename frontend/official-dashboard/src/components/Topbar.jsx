@@ -1,7 +1,7 @@
-function Topbar(){
-    return(
-        <>
-            <h1>topbar header</h1>
-        </>
-    )
+function Topbar() {
+  return (
+    <div>
+      <h1>topbar header</h1>
+    </div>
+  );
 }

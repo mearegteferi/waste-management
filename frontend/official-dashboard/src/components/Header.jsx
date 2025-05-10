@@ -1,7 +1,5 @@
+import Topbar from "./Topbar";
+
 function Header() {
-  return (
-    <div>
-      <h1>this the header</h1>
-    </div>
-  );
+  return <Topbar />
 }

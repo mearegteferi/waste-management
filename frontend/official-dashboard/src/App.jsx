@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router'
 import Login from "./components/Login"
+import Header from './components/Header'
+import Sidebar from './components/Sidebar'
 
 function App() {
 

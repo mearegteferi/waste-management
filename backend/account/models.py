@@ -9,9 +9,10 @@ class DistrictType(models.TextChoices):
 
 
 
-
 class User(AbstractUser):
 
+    email = models.EmailField()
+    full_name = models.CharField(max_length=20)
     phone = models.CharField(max_length=20, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
 

@@ -15,6 +15,7 @@ class User(AbstractUser):
     user_name = models.CharField(max_length=50)
     full_name = models.CharField(max_length=20)
     phone = models.CharField(max_length=20, blank=True, null=True)
+    role = models.CharField(choices=DistrictType.choices)
     image = models.ImageField(blank=True, null=bool)
     is_verified = models.BooleanField(default=False)
 

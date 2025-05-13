@@ -5,4 +5,11 @@ from django.contrib.auth.models import Group
 
 @receiver(post_migrate)
 def create_user_roles(sender, **kwargs):
-    pass
+    role_names = [
+        'Inspector',
+        'Dispatcher',
+        'Admin',
+        'Supervisor',
+        'Data Encoder',
+        'Evaluator'
+    ]

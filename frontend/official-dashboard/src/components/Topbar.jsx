@@ -10,7 +10,10 @@ function Topbar() {
         <span className="material-symbols-outlined mr-1">settings</span>
         <span className="hidden sm:inline">Settings</span>
       </div>
-      <div className="text-amber-300">help</div>
+      <div className="flex items-center cursor-pointer hover:text-amber-600 transition">
+        <span className="material-symbols-outlined mr-1">help</span>
+        <span className="hidden sm:inline">Help</span>
+      </div>
     </div>
   );
 }

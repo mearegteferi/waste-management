@@ -18,3 +18,5 @@ function Topbar() {
     </div>
   );
 }
+
+export default Topbar;

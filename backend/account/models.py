@@ -17,7 +17,7 @@ class UserAccountManager(BaseUserManager):
       user.user_permissions.add(permission)
     return user
   
-  def create_superuser(self, email, role,image, status, password=None, **extra_fields):
+  def create_superuser(self, email, role, image, status, password=None, **extra_fields):
     user = self.create_user(email, role, image, status, password, **extra_fields)
     user.is_active = True
     user.is_superuser = True

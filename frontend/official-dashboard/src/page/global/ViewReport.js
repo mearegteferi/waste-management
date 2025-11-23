@@ -6,7 +6,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import axios from "axios";
-import { columnsConfig } from "../../data/columns";
+import { columnsConfig } from "../../utils/columns";
 
 const ViewReport = () => {
   const theme = useTheme();

@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { tokens } from "../theme";
-import { menuItems } from "../data/MenuItems";
+import { menuItems } from "../utils/MenuItems";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../state/authSlice"; // Adjust the path based on your file structure
-import pro from "../images/channel-1.jpeg";
+import pro from "../assets/channel-1.jpeg";
 
 const SidebarItem = ({
   title,
